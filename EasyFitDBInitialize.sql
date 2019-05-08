@@ -1,0 +1,81 @@
+CREATE DATABASE EasyFit;
+USE EasyFit;
+
+CREATE TABLE `SimpleProducts` (
+	`ID` bigint NOT NULL AUTO_INCREMENT,
+	`NAME` varchar(255) NOT NULL,
+	`KCAL` double NOT NULL,
+	`PROTEINS` double NOT NULL,
+	`FATS` double NOT NULL,
+	`CARBOHYDRATES` double NOT NULL,
+	PRIMARY KEY (`ID`)
+);
+
+CREATE TABLE `EatenMeals` (
+	`ID` bigint NOT NULL AUTO_INCREMENT,
+	`SIMPLEPRODUCT_ID` bigint NOT NULL,
+	`QUANTITY` double NOT NULL,
+	`DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`USER_ID` bigint NOT NULL,
+	PRIMARY KEY (`ID`)
+);
+
+CREATE TABLE `ComplexMeals` (
+	`ID` bigint NOT NULL AUTO_INCREMENT,
+	`NAME` varchar(255) NOT NULL,
+	PRIMARY KEY (`ID`)
+);
+
+CREATE TABLE `ComplexMealsIngredients` (
+	`COMPLEXMEAL_ID` bigint NOT NULL,
+	`SIMPLEPRODUCT_ID` bigint NOT NULL,
+	`QUANTITY` double NOT NULL,
+	PRIMARY KEY (`COMPLEXMEAL_ID`,`SIMPLEPRODUCT_ID`)
+);
+
+CREATE TABLE `Users` (
+	`ID` bigint NOT NULL AUTO_INCREMENT,
+	`EMAIL` varchar(255) NOT NULL,
+	`LOGIN` varchar(255) NOT NULL,
+	`PASSWORDHASH` varchar(255) NOT NULL,
+	PRIMARY KEY (`ID`)
+);
+
+ALTER TABLE `EatenMeals` ADD CONSTRAINT `EatenMeals_fk0` FOREIGN KEY (`SIMPLEPRODUCT_ID`) REFERENCES `SimpleProducts`(`ID`);
+
+ALTER TABLE `EatenMeals` ADD CONSTRAINT `EatenMeals_fk1` FOREIGN KEY (`USER_ID`) REFERENCES `Users`(`ID`);
+
+ALTER TABLE `ComplexMealsIngredients` ADD CONSTRAINT `ComplexMealsIngredients_fk0` FOREIGN KEY (`COMPLEXMEAL_ID`) REFERENCES `ComplexMeals`(`ID`);
+
+ALTER TABLE `ComplexMealsIngredients` ADD CONSTRAINT `ComplexMealsIngredients_fk1` FOREIGN KEY (`SIMPLEPRODUCT_ID`) REFERENCES `SimpleProducts`(`ID`);
+
+
+INSERT INTO `SimpleProducts` (`NAME`, `KCAL`, `PROTEINS`, `FATS`, `CARBOHYDRATES`)
+VALUES
+	('Chleb Tostowy', 306, 8.9, 4.7, 56.7);
+
+INSERT INTO `SimpleProducts` (`NAME`, `KCAL`, `PROTEINS`, `FATS`, `CARBOHYDRATES`)
+VALUES
+	('Dżem Porzeczkowy', 130, 0.9, 0.2, 28.3);
+
+INSERT INTO `SimpleProducts` (`NAME`, `KCAL`, `PROTEINS`, `FATS`, `CARBOHYDRATES`)
+VALUES
+	('Masło Orzechowe', 695, 13, 67, 10);
+
+
+INSERT INTO `Users` (`EMAIL`, `LOGIN`, `PASSWORDHASH`)
+VALUES
+	('ea@example.com', 'login', 'hash');
+
+
+INSERT INTO `EatenMeals` (`SIMPLEPRODUCT_ID`, `QUANTITY`, `USER_ID`)
+VALUES
+	(1, 80, 1);
+
+INSERT INTO `EatenMeals` (`SIMPLEPRODUCT_ID`, `QUANTITY`, `USER_ID`)
+VALUES
+	(2, 30, 1);
+
+INSERT INTO `EatenMeals` (`SIMPLEPRODUCT_ID`, `QUANTITY`, `USER_ID`)
+VALUES
+	(3, 20, 1);
