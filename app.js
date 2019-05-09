@@ -24,10 +24,16 @@ app.get('/simpleProducts/:id',(req,res)=>{
   connection.query(`SELECT * FROM SimpleProducts WHERE ID = ${req.params.id}` , (err, rows, fields)=>{
     if (err) {
       console.log("Failed to query");
+      res.status(500);
       res.end();
       return
     }
-    res.json(rows);
+    if(rows[0]){
+      res.json(rows);
+    }else{
+      res.status(404);
+      res.end();
+    }
   })
 })
 
@@ -35,6 +41,7 @@ app.get('/simpleProducts',(req,res)=>{
   connection.query('SELECT * FROM SimpleProducts' , (err, rows, fields)=>{
     if (err) {
       console.log("Failed to query");
+      res.status(500)
       res.end();
       return
     }
@@ -44,17 +51,18 @@ app.get('/simpleProducts',(req,res)=>{
 
 app.post('/simpleProducts',(req,res)=>{
   const schema = {
-    NAME: Joi.string().min(3).required(),
-    KCAL: Joi.number().required(),
-    PROTEINS: Joi.number().required(),
-    FATS: Joi.number().required(),
-    CARBOHYDRATES: Joi.number().required()
+    name: Joi.string().min(3).required(),
+    kcal: Joi.number().required(),
+    proteins: Joi.number().required(),
+    fats: Joi.number().required(),
+    carbohydrates: Joi.number().required()
   }
   const validationResult = Joi.validate(req.body, schema);
   if(!validationResult.error){
-    connection.query(`INSERT INTO SimpleProducts (NAME, KCAL, PROTEINS, FATS, CARBOHYDRATES) VALUES ("${req.body.NAME}", ${req.body.KCAL}, ${req.body.PROTEINS}, ${req.body.FATS}, ${req.body.CARBOHYDRATES})` , (err, rows, fields)=>{
+    connection.query(`INSERT INTO SimpleProducts (NAME, KCAL, PROTEINS, FATS, CARBOHYDRATES) VALUES ("${req.body.name}", ${req.body.kcal}, ${req.body.proteins}, ${req.body.fats}, ${req.body.carbohydrates})` , (err, rows, fields)=>{
       if (err) {
         console.log("Failed to query", err);
+        res.status(500);
         res.end();
         return
       }
@@ -62,6 +70,7 @@ app.post('/simpleProducts',(req,res)=>{
       res.json({ID: rows.insertId, ...req.body})
     })
   }else{
+    res.status(400)
     res.send(validationResult.error.details[0].message);
     return
   }
@@ -72,10 +81,17 @@ app.get('/eatenMeals/:user/:year/:month/:day',(req, res)=>{
   connection.query(query , (err, rows, fields)=>{
     if (err) {
       console.log("Failed to query");
+      res.status(500)
       res.end();
       return
     }
-    res.json(rows);
+    if(rows[0][Object.keys(rows[0])[0]]){
+      res.json(rows[0]);
+    }else{
+      res.status(404);
+      res.end();
+    }
+    
   })
 })
 
@@ -84,11 +100,59 @@ app.get('/eatenMealsDetailed/:user/:year/:month/:day',(req, res)=>{
   connection.query(query , (err, rows, fields)=>{
     if (err) {
       console.log("Failed to query");
+      res.status(500);
       res.end();
       return
     }
-    res.json(rows);
+    if(rows[0]){
+      res.json(rows);
+    }else{
+      res.status(404);
+      res.end();
+    }
+    
   })
+})
+
+app.post('/eatenMeals',(req,res)=>{
+  const eatenProductSchema = Joi.object().keys({
+    simpleProductId: Joi.number().required(),
+    quantity: Joi.number().required()
+  })
+
+  const schema = Joi.object().keys({
+    userId: Joi.number().required(),
+    eatenProducts: Joi.array().items(eatenProductSchema)
+  })
+  
+
+
+  const validationResult = Joi.validate(req.body, schema);
+  if(!validationResult.error){
+    const values = req.body.eatenProducts.map(eatenProduct=>{
+      let v = Object.values(eatenProduct);
+      v.push(req.body.userId);
+      return v;
+    });
+
+    connection.query(`INSERT INTO EatenMeals (SIMPLEPRODUCT_ID, QUANTITY, USER_ID) VALUES ?`,[values] , (err, rows, fields)=>{
+      if (err) {
+        console.log("Failed to query", err);
+        res.status(400);
+        res.send("Failed to query");
+        return
+      }else{
+        res.send('Records added to database');
+      }
+      
+    })
+    
+
+  }else{
+    res.status(400);
+    res.send(validationResult.error.details[0].message);
+    return
+  }
 })
 
 app.listen(3000, ()=>{console.log('Listening...')})
