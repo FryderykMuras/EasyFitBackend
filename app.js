@@ -29,7 +29,7 @@ app.get('/simpleProducts/:id',(req,res)=>{
       return
     }
     if(rows[0]){
-      res.json(rows);
+      res.json(rows[0]);
     }else{
       res.status(404);
       res.end();
@@ -39,6 +39,7 @@ app.get('/simpleProducts/:id',(req,res)=>{
 
 app.get('/simpleProducts',(req,res)=>{
   connection.query('SELECT * FROM SimpleProducts' , (err, rows, fields)=>{
+    console.log("New request");
     if (err) {
       console.log("Failed to query");
       res.status(500)
@@ -105,7 +106,31 @@ app.get('/eatenMealsDetailed/:user/:year/:month/:day',(req, res)=>{
       return
     }
     if(rows[0]){
-      res.json(rows);
+      console.log(rows.map(obj=>{
+          return {SIMPLEPRODUCT: {
+            ID: obj.SIMPLEPRODUCT_ID,
+            NAME: obj.NAME,
+            KCAL: obj.CALORIES,
+            PROTEINS: obj.PROTEINS,
+            FATS: obj.FATS,
+            CARBOHYDRATES1: obj.CARBOHYDRATES
+            },
+            QUANTITY: obj.QUANTITY  
+          }
+        })
+      );
+      res.json(rows.map(obj=>{
+        return {SIMPLEPRODUCT: {
+          ID: obj.SIMPLEPRODUCT_ID,
+          NAME: obj.NAME,
+          KCAL: obj.CALORIES,
+          PROTEINS: obj.PROTEINS,
+          FATS: obj.FATS,
+          CARBOHYDRATES1: obj.CARBOHYDRATES
+          },
+          QUANTITY: obj.QUANTITY  
+        }
+      }));
     }else{
       res.status(404);
       res.end();
