@@ -13,7 +13,8 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'password',
-  database: 'EasyFit'
+  database: 'EasyFit',
+  charset : 'utf8'
 })
 
 app.get('/',(req, res)=>{
@@ -126,7 +127,7 @@ app.get('/eatenMealsDetailed/:user/:year/:month/:day',(req, res)=>{
           KCAL: obj.CALORIES,
           PROTEINS: obj.PROTEINS,
           FATS: obj.FATS,
-          CARBOHYDRATES1: obj.CARBOHYDRATES
+          CARBOHYDRATES: obj.CARBOHYDRATES
           },
           QUANTITY: obj.QUANTITY  
         }
