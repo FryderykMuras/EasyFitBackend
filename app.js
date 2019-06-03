@@ -78,7 +78,7 @@ app.get('/complexMealDetailed/:id',(req,res)=>{
 
 app.post('/complexMeals',(req,res)=>{
   
-  connection.query(`INSERT INTO ComplexMeals (NAME) VALUES ("${req.body.name}")`, (err, rows, fields)=>{
+  connection.query(`INSERT INTO ComplexMeals (NAME) VALUES ("${req.body.NAME}")`, (err, rows, fields)=>{
     if (err) {
       console.log("Failed to query", err);
       res.status(500);
@@ -87,7 +87,7 @@ app.post('/complexMeals',(req,res)=>{
     }
     console.log(rows.insertId);
     const id = rows.insertId;
-    const vals = req.body.ingredians.map(obj=>[rows.insertId, obj.simpleProductId, obj.quantity]);
+    const vals = req.body.INGREDIENTS.map(obj=>[rows.insertId, obj.SIMPLEPRODUCT_ID, obj.QUANTITY]);
     connection.query(`INSERT INTO ComplexMealsIngredients (COMPLEXMEAL_ID, SIMPLEPRODUCT_ID, QUANTITY) VALUES ?`,[vals], (err, rows, fields)=>{
       if (err) {
         console.log("Failed to query", err);
@@ -118,15 +118,15 @@ app.get('/simpleProducts',(req,res)=>{
 
 app.post('/simpleProducts',(req,res)=>{
   const schema = {
-    name: Joi.string().min(3).required(),
-    kcal: Joi.number().required(),
-    proteins: Joi.number().required(),
-    fats: Joi.number().required(),
-    carbohydrates: Joi.number().required()
+    NAME: Joi.string().min(3).required(),
+    KCAL: Joi.number().required(),
+    PROTEINS: Joi.number().required(),
+    FATS: Joi.number().required(),
+    CARBOHYDRATES: Joi.number().required()
   }
   const validationResult = Joi.validate(req.body, schema);
   if(!validationResult.error){
-    connection.query(`INSERT INTO SimpleProducts (NAME, KCAL, PROTEINS, FATS, CARBOHYDRATES) VALUES ("${req.body.name}", ${req.body.kcal}, ${req.body.proteins}, ${req.body.fats}, ${req.body.carbohydrates})` , (err, rows, fields)=>{
+    connection.query(`INSERT INTO SimpleProducts (NAME, KCAL, PROTEINS, FATS, CARBOHYDRATES) VALUES ("${req.body.NAME}", ${req.body.KCAL}, ${req.body.PROTEINS}, ${req.body.FATS}, ${req.body.CARBOHYDRATES})` , (err, rows, fields)=>{
       if (err) {
         console.log("Failed to query", err);
         res.status(500);
@@ -137,6 +137,7 @@ app.post('/simpleProducts',(req,res)=>{
       res.json({ID: rows.insertId, ...req.body})
     })
   }else{
+    console.log(validationResult.error);
     res.status(400)
     res.send(validationResult.error.details[0].message);
     return
