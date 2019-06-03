@@ -38,8 +38,73 @@ app.get('/simpleProducts/:id',(req,res)=>{
   })
 })
 
+app.get('/complexMeals',(req,res)=>{
+
+  connection.query('SELECT c.ID, c.NAME, SUM(s.KCAL*i.QUANTITY/100) as KCAL, SUM(s.PROTEINS*i.QUANTITY/100) as PROTEINS, SUM(s.FATS*i.QUANTITY/100) as FATS, SUM(s.CARBOHYDRATES*i.QUANTITY/100) as CARBOHYDRATES FROM ComplexMeals c JOIN ComplexMealsIngredients i ON c.ID = i.COMPLEXMEAL_ID JOIN SimpleProducts s ON i.SIMPLEPRODUCT_ID = S.ID GROUP BY c.ID' , (err, rows, fields)=>{
+    console.log("New request");
+    if (err) {
+      console.log(err);
+      res.status(500)
+      res.end();
+      return
+    }
+     
+    res.json(rows);
+    return
+  })
+})
+
+app.get('/complexMealDetailed/:id',(req,res)=>{
+  let ComplexMeals;
+  connection.query(`SELECT c.ID, s.NAME, i.QUANTITY FROM ComplexMeals c JOIN ComplexMealsIngredients i ON c.ID = i.COMPLEXMEAL_ID JOIN SimpleProducts s ON i.SIMPLEPRODUCT_ID = S.ID WHERE c.ID = ${req.params.id}` , (err, rows, fields)=>{
+    console.log("New request");
+    if (err) {
+      console.log(err);
+      res.status(500)
+      res.end();
+      return
+    }else if(!rows[0]){
+      res.status(404);
+      res.end();
+      return
+    }
+    ComplexMeals = rows;
+    let pairs = ComplexMeals.map(obj=>{return{NAME: obj.NAME,QUANTITY: obj.QUANTITY}})
+    
+    res.json({ID: req.params.id,INGREDIANS: pairs});
+    return
+  })
+})
+
+app.post('/complexMeals',(req,res)=>{
+  
+  connection.query(`INSERT INTO ComplexMeals (NAME) VALUES ("${req.body.name}")`, (err, rows, fields)=>{
+    if (err) {
+      console.log("Failed to query", err);
+      res.status(500);
+      res.end();
+      return
+    }
+    console.log(rows.insertId);
+    const id = rows.insertId;
+    const vals = req.body.ingredians.map(obj=>[rows.insertId, obj.simpleProductId, obj.quantity]);
+    connection.query(`INSERT INTO ComplexMealsIngredients (COMPLEXMEAL_ID, SIMPLEPRODUCT_ID, QUANTITY) VALUES ?`,[vals], (err, rows, fields)=>{
+      if (err) {
+        console.log("Failed to query", err);
+        res.status(500);
+        res.end();
+        return
+      }
+      
+      res.json({ID: id})
+      
+    })
+
+  })
+})
+
 app.get('/simpleProducts',(req,res)=>{
-  connection.query('SELECT * FROM SimpleProducts' , (err, rows, fields)=>{
+  connection.query('SELECT * FROM SimpleProducts ORDER BY NAME' , (err, rows, fields)=>{
     console.log("New request");
     if (err) {
       console.log("Failed to query");
