@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 8.0.16)
 # Database: EasyFit
-# Generation Time: 2019-06-08 13:18:32 +0000
+# Generation Time: 2019-06-08 19:02:53 +0000
 # ************************************************************
 
 
@@ -117,6 +117,66 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table Goals
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Goals`;
+
+CREATE TABLE `Goals` (
+  `ID` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `KCAL` double DEFAULT NULL,
+  `CARBOHYDRATES` int(11) DEFAULT NULL,
+  `PROTEINS` int(11) DEFAULT NULL,
+  `FATS` int(11) DEFAULT NULL,
+  `USER_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USER_ID` (`USER_ID`),
+  CONSTRAINT `goals_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+LOCK TABLES `Goals` WRITE;
+/*!40000 ALTER TABLE `Goals` DISABLE KEYS */;
+
+INSERT INTO `Goals` (`ID`, `KCAL`, `CARBOHYDRATES`, `PROTEINS`, `FATS`, `USER_ID`)
+VALUES
+	(8,2000,50,20,30,8),
+	(9,2369,40,20,40,9),
+	(10,5555,40,20,40,10);
+
+/*!40000 ALTER TABLE `Goals` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table Notifications
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Notifications`;
+
+CREATE TABLE `Notifications` (
+  `ID` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `USER_ID` bigint(20) DEFAULT NULL,
+  `TIME` varchar(8) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USER_ID` (`USER_ID`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+LOCK TABLES `Notifications` WRITE;
+/*!40000 ALTER TABLE `Notifications` DISABLE KEYS */;
+
+INSERT INTO `Notifications` (`ID`, `USER_ID`, `TIME`)
+VALUES
+	(1,9,'12:20:00'),
+	(2,9,'14:15:00'),
+	(3,9,'12:30:00'),
+	(4,9,'12:30:00'),
+	(5,9,'12:31:00'),
+	(6,9,'12:32:00');
+
+/*!40000 ALTER TABLE `Notifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table SimpleProducts
 # ------------------------------------------------------------
 
@@ -171,7 +231,9 @@ VALUES
 	(5,'ea3@example.com','hash'),
 	(6,'ea4@example.com','hash'),
 	(7,'ea5@example.com','hash'),
-	(8,'ea10@example.com','11');
+	(8,'ea10@example.com','11'),
+	(9,'aaaaaaa','12'),
+	(10,'nnnn','qq');
 
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;

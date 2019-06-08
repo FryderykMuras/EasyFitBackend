@@ -2,8 +2,10 @@ const express = require('express');
 const mysql = require('mysql');
 const Joi = require('@hapi/joi');
 const simpleProductsAPI = require('./simpleProductsAPI');
-const complexMealsApi = require('./complexMealsAPI');
-const eatenMealsApi = require('./eatenMealsAPI');
+const complexMealsAPI = require('./complexMealsAPI');
+const eatenMealsAPI = require('./eatenMealsAPI');
+const goalsAPI = require('./goalsAPI');
+const notificationsAPI = require('./notificationsAPI');
 
 const app = express();
 app.use(express.json());
@@ -17,8 +19,10 @@ const connection = mysql.createConnection({
 })
 
 simpleProductsAPI.simpleProductsAPI(app,connection,Joi);
-complexMealsApi.complexMealsAPI(app,connection,Joi);
-eatenMealsApi.eatenMealsAPI(app,connection,Joi);
+complexMealsAPI.complexMealsAPI(app,connection,Joi);
+eatenMealsAPI.eatenMealsAPI(app,connection,Joi);
+goalsAPI.goalsAPI(app,connection,Joi);
+notificationsAPI.notificationsAPI(app,connection,Joi);
 
 
 
@@ -50,6 +54,8 @@ app.post('/register',(req,res)=>{
         }else{
           console.log(rows);
           res.status(201).json({USERID: rows.insertId})
+
+          connection.query(`INSERT INTO Goals (USER_ID,KCAL,CARBOHYDRATES,PROTEINS,FATS) VALUES (${rows.insertId}, 2000, 50, 20, 30)` , (err, rows, fields)=>{})
           return
         }
         
@@ -75,7 +81,7 @@ app.post('/login',(req,res)=>{
       res.status(401).send();
       return;
     }else{
-      res.json({USERID: rows[0].ID})
+      res.json({USERID: rows[0].ID});
       res.end();
     }
     console.log(rows);
