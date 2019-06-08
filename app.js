@@ -26,7 +26,7 @@ app.post('/register',(req,res)=>{
   const newUser = req.body;
   console.log(newUser);
 
-  connection.query(`SELECT * FROM Users WHERE LOGIN = '${newUser.USERNAME}'` , (err, rows, fields)=>{
+  connection.query(`SELECT * FROM Users WHERE EMAIL = '${newUser.EMAIL}'`,(err, rows, fields)=>{
     if (err) {
       console.log("Failed to query", err);
       res.status(500);
@@ -34,45 +34,28 @@ app.post('/register',(req,res)=>{
       return
     }else{
       if(rows[0]){
-        console.log(rows);
+        console.log("email taken");
         res.status("409");
-        res.send("This username is taken");
+        res.send("This email is taken");
         return
       }
-    }
-
-    connection.query(`SELECT * FROM Users WHERE EMAIL = '${newUser.EMAIL}'`,(err, rows, fields)=>{
-      if (err) {
-        console.log("Failed to query", err);
-        res.status(500);
-        res.send("Failed to query");
-        return
-      }else{
-        if(rows[0]){
-          console.log("email taken");
-          res.status("409");
-          res.send("This email is taken");
+      const values = [newUser.EMAIL, newUser.PASSWORD];
+      console.log(values);
+      connection.query(`INSERT INTO Users (EMAIL, PASSWORDHASH) VALUES (?)`,[values] , (err, rows, fields)=>{
+        if (err) {
+          console.log("Failed to query", err);
+          res.status(500);
+          res.send("Failed to query");
+          return
+        }else{
+          console.log(rows);
+          res.status(201).json({USERID: rows.insertId})
           return
         }
-        const values = [newUser.EMAIL, newUser.USERNAME, newUser.PASSWORD];
-        console.log(values);
-        connection.query(`INSERT INTO Users (EMAIL, LOGIN, PASSWORDHASH) VALUES (?)`,[values] , (err, rows, fields)=>{
-          if (err) {
-            console.log("Failed to query", err);
-            res.status(500);
-            res.send("Failed to query");
-            return
-          }else{
-            res.status(201).send();
-            return
-          }
-          
-        })
         
-      }
+      })
       
-    })
-    
+    }
     
   })
 
