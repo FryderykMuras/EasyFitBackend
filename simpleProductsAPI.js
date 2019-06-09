@@ -48,7 +48,7 @@ exports.simpleProductsAPI = function(app, connection, Joi){
               return
             }
             console.log(rows.insertId);
-            res.json({ID: rows.insertId, ...req.body})
+            res.json({ID: rows.insertId})
           })
         }else{
           console.log(validationResult.error);

@@ -20,6 +20,7 @@ exports.notificationsAPI = function(app, connection, Joi){
           })
     })
     app.post('/notifications/:id',(req,res)=>{
+        console.log(req.body.TIME);
         connection.query(`INSERT INTO Notifications (TIME,USER_ID) SELECT '${req.body.TIME}', ${req.params.id} WHERE NOT EXISTS (SELECT 1 FROM Notifications WHERE USER_ID = ${req.params.id} AND TIME = '${req.body.TIME}')` , (err, rows, fields)=>{
             if (err) {
               console.log("Failed to query",err);
@@ -42,6 +43,7 @@ exports.notificationsAPI = function(app, connection, Joi){
     })
 
     app.delete('/notifications/:id',(req,res)=>{
+        console.log(req.body.TIME);
         connection.query(`DELETE FROM Notifications WHERE TIME='${req.body.TIME}' AND USER_ID = ${req.params.id}` , (err, rows, fields)=>{
             if (err) {
               console.log("Failed to query",err);

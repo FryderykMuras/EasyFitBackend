@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 8.0.16)
 # Database: EasyFit
-# Generation Time: 2019-06-08 19:02:53 +0000
+# Generation Time: 2019-06-09 22:32:15 +0000
 # ************************************************************
 
 
@@ -32,20 +32,6 @@ CREATE TABLE `ComplexMeals` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `ComplexMeals` WRITE;
-/*!40000 ALTER TABLE `ComplexMeals` DISABLE KEYS */;
-
-INSERT INTO `ComplexMeals` (`ID`, `NAME`)
-VALUES
-	(1,'Kanapka z masłem orzechowym i dżemem'),
-	(4,'aaa'),
-	(5,'undefined'),
-	(6,'aaadf'),
-	(7,'test111'),
-	(8,'test111');
-
-/*!40000 ALTER TABLE `ComplexMeals` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table ComplexMealsIngredients
@@ -63,21 +49,6 @@ CREATE TABLE `ComplexMealsIngredients` (
   CONSTRAINT `ComplexMealsIngredients_fk1` FOREIGN KEY (`SIMPLEPRODUCT_ID`) REFERENCES `simpleproducts` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `ComplexMealsIngredients` WRITE;
-/*!40000 ALTER TABLE `ComplexMealsIngredients` DISABLE KEYS */;
-
-INSERT INTO `ComplexMealsIngredients` (`COMPLEXMEAL_ID`, `SIMPLEPRODUCT_ID`, `QUANTITY`)
-VALUES
-	(1,1,80),
-	(1,2,30),
-	(1,3,30),
-	(4,1,20),
-	(4,3,50),
-	(6,1,35),
-	(6,3,555);
-
-/*!40000 ALTER TABLE `ComplexMealsIngredients` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table EatenMeals
@@ -98,23 +69,6 @@ CREATE TABLE `EatenMeals` (
   CONSTRAINT `EatenMeals_fk1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `EatenMeals` WRITE;
-/*!40000 ALTER TABLE `EatenMeals` DISABLE KEYS */;
-
-INSERT INTO `EatenMeals` (`ID`, `SIMPLEPRODUCT_ID`, `QUANTITY`, `DATE`, `USER_ID`)
-VALUES
-	(1,1,80,'2019-06-03 20:07:44',1),
-	(2,2,30,'2019-06-03 20:07:44',1),
-	(3,3,20,'2019-06-03 20:07:44',1),
-	(4,1,25,'2019-06-03 22:27:17',1),
-	(5,1,22,'2019-06-08 13:25:01',1),
-	(6,1,22,'2019-06-08 13:25:43',1),
-	(7,2,22,'2019-06-08 13:46:22',2),
-	(8,4,287,'2019-06-08 13:46:32',2),
-	(9,2,223,'2019-06-08 15:16:43',8);
-
-/*!40000 ALTER TABLE `EatenMeals` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table Goals
@@ -134,17 +88,6 @@ CREATE TABLE `Goals` (
   CONSTRAINT `goals_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `Goals` WRITE;
-/*!40000 ALTER TABLE `Goals` DISABLE KEYS */;
-
-INSERT INTO `Goals` (`ID`, `KCAL`, `CARBOHYDRATES`, `PROTEINS`, `FATS`, `USER_ID`)
-VALUES
-	(8,2000,50,20,30,8),
-	(9,2369,40,20,40,9),
-	(10,5555,40,20,40,10);
-
-/*!40000 ALTER TABLE `Goals` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table Notifications
@@ -161,20 +104,6 @@ CREATE TABLE `Notifications` (
   CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `users` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `Notifications` WRITE;
-/*!40000 ALTER TABLE `Notifications` DISABLE KEYS */;
-
-INSERT INTO `Notifications` (`ID`, `USER_ID`, `TIME`)
-VALUES
-	(1,9,'12:20:00'),
-	(2,9,'14:15:00'),
-	(3,9,'12:30:00'),
-	(4,9,'12:30:00'),
-	(5,9,'12:31:00'),
-	(6,9,'12:32:00');
-
-/*!40000 ALTER TABLE `Notifications` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table SimpleProducts
@@ -192,20 +121,6 @@ CREATE TABLE `SimpleProducts` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `SimpleProducts` WRITE;
-/*!40000 ALTER TABLE `SimpleProducts` DISABLE KEYS */;
-
-INSERT INTO `SimpleProducts` (`ID`, `NAME`, `KCAL`, `PROTEINS`, `FATS`, `CARBOHYDRATES`)
-VALUES
-	(1,'Chleb Tostowy',306,8.9,4.7,56.7),
-	(2,'Dżem Porzeczkowy',130,0.9,0.2,28.3),
-	(3,'Masło Orzechowe',695,13,67,10),
-	(4,'rhdh',6,6,9,6),
-	(5,'aaass',66,9,9,9),
-	(6,'test111',200,50,12,44);
-
-/*!40000 ALTER TABLE `SimpleProducts` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table Users
@@ -220,23 +135,6 @@ CREATE TABLE `Users` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-LOCK TABLES `Users` WRITE;
-/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-
-INSERT INTO `Users` (`ID`, `EMAIL`, `PASSWORDHASH`)
-VALUES
-	(1,'ea@example.com','hash'),
-	(2,'ea1@example.com','password'),
-	(3,'ea2@example.com','hash'),
-	(5,'ea3@example.com','hash'),
-	(6,'ea4@example.com','hash'),
-	(7,'ea5@example.com','hash'),
-	(8,'ea10@example.com','11'),
-	(9,'aaaaaaa','12'),
-	(10,'nnnn','qq');
-
-/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 

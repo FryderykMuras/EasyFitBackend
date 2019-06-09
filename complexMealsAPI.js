@@ -2,7 +2,7 @@ exports.complexMealsAPI = function(app, connection, Joi){
 
     app.get('/complexMeals',(req,res)=>{
 
-        connection.query('SELECT c.ID, c.NAME, SUM(s.KCAL*i.QUANTITY/100) as KCAL, SUM(s.PROTEINS*i.QUANTITY/100) as PROTEINS, SUM(s.FATS*i.QUANTITY/100) as FATS, SUM(s.CARBOHYDRATES*i.QUANTITY/100) as CARBOHYDRATES FROM ComplexMeals c JOIN ComplexMealsIngredients i ON c.ID = i.COMPLEXMEAL_ID JOIN SimpleProducts s ON i.SIMPLEPRODUCT_ID = S.ID GROUP BY c.ID' , (err, rows, fields)=>{
+        connection.query('SELECT c.ID, c.NAME, SUM(s.KCAL*i.QUANTITY/100) as KCAL, SUM(s.PROTEINS*i.QUANTITY/100) as PROTEINS, SUM(s.FATS*i.QUANTITY/100) as FATS, SUM(s.CARBOHYDRATES*i.QUANTITY/100) as CARBOHYDRATES FROM ComplexMeals c JOIN ComplexMealsIngredients i ON c.ID = i.COMPLEXMEAL_ID JOIN SimpleProducts s ON i.SIMPLEPRODUCT_ID = S.ID GROUP BY c.ID ORDER BY c.NAME' , (err, rows, fields)=>{
           console.log("New request");
           if (err) {
             console.log(err);
